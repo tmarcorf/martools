@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { PomodoroContext } from '../../../app/providers/PomodoroProvider';
+import { PomodoroContext } from '../../../app/providers/pomodoroContext';
 
 function formatTime(seconds: number): string {
   const m = Math.floor(seconds / 60);

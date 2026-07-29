@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { PomodoroContext } from '../../../app/providers/PomodoroProvider';
+import { PomodoroContext } from '../../../app/providers/pomodoroContext';
 import { TIMER_LABELS } from '../types/pomodoro.types';
 import { CircularTimer } from '../components/CircularTimer';
 import { TimerControls } from '../components/TimerControls';

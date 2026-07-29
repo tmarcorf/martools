@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { PomodoroContext } from '../../../app/providers/PomodoroProvider';
+import { PomodoroContext } from '../../../app/providers/pomodoroContext';
 import { TIMER_LABELS, type TimerMode } from '../types/pomodoro.types';
 
 const MODES: TimerMode[] = ['focus', 'shortBreak', 'longBreak'];
