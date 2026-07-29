@@ -1,0 +1,54 @@
+# Dependências
+node_modules/
+.pnp
+.pnp.js
+.yarn/install-state.gz
+
+# Build
+/build
+dist/
+
+# Variáveis de ambiente
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Testes
+/coverage
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+logs
+*.log
+
+# Editor / IDE
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Cache
+.cache/
+.eslintcache
+.parcel-cache
+
+# Vite (caso use)
+.vite/
+
+# Misc
+*.local
