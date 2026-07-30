@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { TimerMode, TimerState } from '../types/pomodoro.types';
-import { TIMER_DURATIONS } from '../types/pomodoro.types';
+import { TIMER_DURATIONS, TIMER_LABELS } from '../types/pomodoro.types';
 
-function playEndSound() {
+export function playEndSound() {
   try {
     const ctx = new AudioContext();
 
@@ -56,11 +56,8 @@ export function usePomodoroTimer() {
   });
 
   const intervalRef = useRef<ReturnType<typeof setInterval>>(undefined);
-  const stateRef = useRef(state);
-
-  useEffect(() => {
-    stateRef.current = state;
-  });
+  const startTimeRef = useRef<number | null>(null);
+  const initialDurationRef = useRef<number | null>(null);
 
   const clearTimer = useCallback(() => {
     if (intervalRef.current) {
@@ -70,13 +67,21 @@ export function usePomodoroTimer() {
   }, []);
 
   const tick = useCallback(() => {
-    const current = stateRef.current;
-    if (current.timeRemaining <= 1) {
+    if (startTimeRef.current == null || initialDurationRef.current == null) return;
+
+    const elapsed = Math.floor((Date.now() - startTimeRef.current) / 1000);
+    const remaining = Math.max(0, initialDurationRef.current - elapsed);
+
+    if (remaining <= 0) {
       clearTimer();
       setState((prev) => ({ ...prev, timeRemaining: 0, isRunning: false }));
       return;
     }
-    setState((prev) => ({ ...prev, timeRemaining: prev.timeRemaining - 1 }));
+
+    setState((prev) => {
+      if (prev.timeRemaining === remaining) return prev;
+      return { ...prev, timeRemaining: remaining };
+    });
   }, [clearTimer]);
 
   const togglePause = useCallback(() => {
@@ -85,12 +90,16 @@ export function usePomodoroTimer() {
         clearTimer();
         return { ...prev, isRunning: false };
       }
+      startTimeRef.current = Date.now();
+      initialDurationRef.current = prev.timeRemaining;
       return { ...prev, isRunning: true };
     });
   }, [clearTimer]);
 
   const reset = useCallback(() => {
     clearTimer();
+    startTimeRef.current = null;
+    initialDurationRef.current = null;
     setState((prev) => ({
       timeRemaining: TIMER_DURATIONS[prev.mode],
       mode: prev.mode,
@@ -101,6 +110,8 @@ export function usePomodoroTimer() {
   const setMode = useCallback(
     (mode: TimerMode) => {
       clearTimer();
+      startTimeRef.current = null;
+      initialDurationRef.current = null;
       setState({
         timeRemaining: TIMER_DURATIONS[mode],
         mode,
@@ -110,13 +121,13 @@ export function usePomodoroTimer() {
     [clearTimer],
   );
 
-  // Start/stop interval when isRunning or timeRemaining changes
+  // Start/stop interval when isRunning changes
   useEffect(() => {
-    if (state.isRunning && state.timeRemaining > 0) {
-      intervalRef.current = setInterval(tick, 1000);
+    if (state.isRunning) {
+      intervalRef.current = setInterval(tick, 250);
     }
     return () => clearTimer();
-  }, [state.isRunning, state.timeRemaining, tick, clearTimer]);
+  }, [state.isRunning, tick, clearTimer]);
 
   // Play sound when timer reaches 0 naturally (not on mount or mode switch)
   const justFinishedRef = useRef(false);
@@ -126,6 +137,25 @@ export function usePomodoroTimer() {
     }
     justFinishedRef.current = state.timeRemaining > 0 && state.isRunning;
   }, [state.timeRemaining, state.isRunning]);
+
+  // Update document title with remaining time while timer is running
+  useEffect(() => {
+    const baseTitle = 'martools';
+
+    if (state.isRunning) {
+      const minutes = Math.floor(state.timeRemaining / 60);
+      const seconds = state.timeRemaining % 60;
+      const formatted = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      const label = TIMER_LABELS[state.mode];
+      document.title = `${formatted} · ${label}`;
+    } else {
+      document.title = baseTitle;
+    }
+
+    return () => {
+      document.title = baseTitle;
+    };
+  }, [state.isRunning, state.timeRemaining, state.mode]);
 
   // Cleanup on unmount
   useEffect(() => {
