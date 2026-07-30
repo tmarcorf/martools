@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- fundo: hexágono arredondado escuro -->
+  <rect x="2" y="2" width="60" height="60" rx="14" ry="14" fill="#08080F" stroke="#2A2A3D" stroke-width="2"/>
+
+  <!-- dentes de engrenagem ao redor (tool/dev remetendo a "ferramentas") -->
+  <g fill="#5EEAD4" opacity="0.9">
+    <!-- topo -->
+    <rect x="27" y="0"  width="10" height="4" rx="2"/>
+    <!-- direita -->
+    <rect x="60" y="27" width="4"  height="10" rx="2"/>
+    <!-- baixo -->
+    <rect x="27" y="60" width="10" height="4"  rx="2"/>
+    <!-- esquerda -->
+    <rect x="0"  y="27" width="4"  height="10" rx="2"/>
+  </g>
+
+  <!-- brackets de código </> estilizados -->
+  <g fill="none" stroke="#5EEAD4" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+    <!-- < -->
+    <path d="M20 22 L10 32 L20 42"/>
+    <!-- / -->
+    <line x1="28" y1="20" x2="36" y2="44"/>
+    <!-- > -->
+    <path d="M44 22 L54 32 L44 42"/>
+  </g>
+</svg>
