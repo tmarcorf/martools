@@ -147,7 +147,7 @@ export function usePomodoroTimer() {
       const seconds = state.timeRemaining % 60;
       const formatted = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
       const label = TIMER_LABELS[state.mode];
-      document.title = `${formatted} · ${label}`;
+      document.title = `${label} · ${formatted}`;
     } else {
       document.title = baseTitle;
     }
